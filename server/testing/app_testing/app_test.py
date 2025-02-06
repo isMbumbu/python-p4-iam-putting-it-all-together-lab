@@ -114,17 +114,12 @@ class TestCheckSession:
             assert response_json['id'] == 1
             assert response_json['username']
 
-    def test_401s_for_no_session(self):
-        '''returns a 401 Unauthorized status code if there is no active session.'''
-        
+    def test_401s_if_no_session(self):
+        '''returns 401 if a user attempts to logout without a session at /logout.'''
         with app.test_client() as client:
-            
-            with client.session_transaction() as session:
-                
-                session['user_id'] = None
-
-            response = client.get('/check_session')
-            
+            # Do not set 'user_id' in the session
+            response = client.delete('/logout')
+        
             assert response.status_code == 401
 
 class TestLogin:
